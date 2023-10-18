@@ -20,6 +20,7 @@ func SlowRunningMaximum(values []int, k int) []int {
 	return result
 }
 
+// Pair aus Wert und Anzahl
 type maximumCount struct {
 	Value int
 	Count int
@@ -27,24 +28,19 @@ type maximumCount struct {
 
 type maximumQueue []maximumCount
 
-func NewQueue() *maximumQueue {
-	return &maximumQueue{}
-}
-
 func addValue(q maximumQueue, value int) maximumQueue {
 	newCount := 1
 	queueLen := len(q)
 
-	// fmt.Printf("add %d to queue len = %d\n", value, queueLen)
-
+	// solange der neue Wert größer ist als der letzte Wert in der Queue
+	// wird der letzte Wert aus der Queue entfernt und die Anzahl der
+	// Wiederholungen addiert
 	for queueLen > 0 && value >= q[queueLen-1].Value {
-		// fmt.Printf("replace %d (%d) with %d\n", q[queueLen-1].Value, q[queueLen-1].Count, value)
-
 		newCount += q[queueLen-1].Count
 		queueLen--
 	}
-	// fmt.Printf("append %d (%d)\n", value, newCount)
 
+	// der neue Wert wird an die Queue angehängt, ggfs. mit der neuen Anzahl
 	return append(q[:queueLen], maximumCount{value, newCount})
 }
 
@@ -54,10 +50,11 @@ func getNextMaximum(q maximumQueue) (maximumQueue, int) {
 	}
 
 	maximum := q[0].Value
+	// solange der Zähler des ersten Elements größer als 1 ist, wird der
+	// Zähler dekrementiert, ansonsten wird das erste Element entfernt
 	if q[0].Count > 1 {
 		q[0].Count--
 	} else {
-		// remove first element
 		q = q[1:]
 	}
 	return q, maximum
@@ -71,10 +68,10 @@ func FastRunningMaximum(values []int, k int) []int {
 	result := make([]int, 0, len(values)-k+1)
 	var queue maximumQueue
 
-	// TODO: Implement
 	for i, v := range values {
 		queue = addValue(queue, v)
 
+		// für die ersten k-1 Elemente gibt es noch keinen Maximum
 		if i >= k-1 {
 			newqueue, maximum := getNextMaximum(queue)
 			result = append(result, maximum)
