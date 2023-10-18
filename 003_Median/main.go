@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"sort"
 )
 
 func main() {
@@ -11,6 +10,7 @@ func main() {
 
 	result := FloatingMedian(values)
 	fmt.Println(result)
+	fmt.Println("expected: [17 9.5 8 12 9 10.5]")
 }
 
 func FloatingMedian(values []int) []float64 {
@@ -27,9 +27,16 @@ func FloatingMedian(values []int) []float64 {
 
 // InsertSorted inserts a new value into a sorted slice
 func InsertSorted(values []int, newValue int) []int {
-	// die Liste ist ja schon sortiert, geht das nicht auch schneller?
 	values = append(values, newValue)
-	sort.Ints(values)
+	// die Liste ist ja schon sortiert, deshalb ein sort.Ints(values), sondern ...
+	for i := len(values) - 1; i > 0; i-- {
+		if values[i] < values[i-1] {
+			values[i], values[i-1] = values[i-1], values[i]
+		} else {
+			break
+		}
+	}
+
 	return values
 }
 
