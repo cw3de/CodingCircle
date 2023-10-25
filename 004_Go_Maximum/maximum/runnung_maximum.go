@@ -61,7 +61,7 @@ func getNextMaximum(q maximumQueue) (maximumQueue, int) {
 }
 
 func FastRunningMaximum(values []int, k int) []int {
-	if k > len(values) {
+	if k <= 0 || k > len(values) {
 		return []int{}
 	}
 
@@ -76,6 +76,34 @@ func FastRunningMaximum(values []int, k int) []int {
 			newqueue, maximum := getNextMaximum(queue)
 			result = append(result, maximum)
 			queue = newqueue
+		}
+	}
+	return result
+}
+
+func GoloRunningMaximum(values []int, k int) []int {
+	if k <= 0 || k > len(values) {
+		return []int{}
+	}
+
+	result := make([]int, 0, len(values)-k+1)
+	var window []int
+
+	for i, v := range values {
+		// Werte entfernen, die außerhalb des Fensters liegen
+		if len(window) > 0 && window[0] <= i-k {
+			window = window[1:]
+		}
+		// Werte aus dem Fenster entfernen, die kleiner als der neue Wert sind
+		for len(window) > 0 && values[window[len(window)-1]] <= v {
+			window = window[:len(window)-1]
+		}
+
+		// Einfügen des neuen Werts
+		window = append(window, i)
+
+		if i >= k-1 {
+			result = append(result, values[window[0]])
 		}
 	}
 	return result

@@ -30,6 +30,8 @@ func TestRunningMaximum(t *testing.T) {
 			assert.Equal(t, test.Result, slowResult)
 			fastResult := maximum.FastRunningMaximum(test.Values, test.K)
 			assert.Equal(t, test.Result, fastResult)
+			goloResult := maximum.GoloRunningMaximum(test.Values, test.K)
+			assert.Equal(t, test.Result, goloResult)
 		})
 	}
 }
