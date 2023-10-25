@@ -75,6 +75,10 @@ public:
     }
     aufwand += loopCount ? loopCount : 1;
     maximaQueue.push_back( { value, newCount } );
+    if( maximaQueue.size() > maxQueueLength )
+    {
+      maxQueueLength = maximaQueue.size();
+    }
   }
 
   int getNextMaximum()
@@ -92,6 +96,7 @@ public:
   }
 
   int getAufwand() const { return aufwand; }
+  int getMaxQueueLen() const { return maxQueueLength; }
 
 private:
   struct Maximum
@@ -102,6 +107,7 @@ private:
 
   std::list<Maximum> maximaQueue; // constant time insert/remove at front/back
   int aufwand{ 0 };
+  int maxQueueLength{ 0 };
 };
 
 std::vector<int> fastRunningMaximum( const std::vector<int>& V, int k )
@@ -117,7 +123,8 @@ std::vector<int> fastRunningMaximum( const std::vector<int>& V, int k )
       result.push_back( fm.getNextMaximum() );
     }
   }
-  std::cout << "Aufwand für " << V.size() << " Elemente: " << fm.getAufwand() << std::endl;
+  std::cout << "Aufwand für size=" << V.size() << " k=" << k << ": " << fm.getAufwand()
+            << " maxQueueLength=" << fm.getMaxQueueLen() << std::endl;
   return result;
 }
 
@@ -171,15 +178,14 @@ TEST( TestMaximum, TestRampUpDownList )
 TEST( TestMaximum, RandomList )
 {
   const int size = 10000;
-  const int k = 50;
-  std::vector<int> input = createRanomList( size );
-  // std::cout << "input:" << input << std::endl;
-  std::vector<int> expected = slowRunningMaximum( input, k );
-  EXPECT_EQ( input.size() - k + 1, expected.size() );
-  // std::cout << "expected:    " << expected << std::endl;
-  std::vector<int> computed = fastRunningMaximum( input, k );
-  // std::cout << "computed:    " << computed << std::endl;
-  EXPECT_EQ( expected, computed );
+  for( int k = 3; k < 100; ++k )
+  {
+    std::vector<int> input = createRanomList( size );
+    std::vector<int> expected = slowRunningMaximum( input, k );
+    EXPECT_EQ( input.size() - k + 1, expected.size() );
+    std::vector<int> computed = fastRunningMaximum( input, k );
+    EXPECT_EQ( expected, computed );
+  }
 }
 
 int main( int argc, char** argv )
