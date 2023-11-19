@@ -1,6 +1,24 @@
 package plzsort
 
+import "math"
+
 type plzList []int
+
+func CountDigetsLoop(number int) int {
+	count := 0
+	for number != 0 {
+		number /= 10
+		count++
+	}
+	return count
+}
+
+func CountDigetsLoga(number int) int {
+	if number < 10 {
+		return 1
+	}
+	return int(math.Log10(float64(number))) + 1
+}
 
 func PlzSort(unsorted []int) []int {
 	plzhash := make(map[int]plzList, 99999)

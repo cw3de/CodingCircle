@@ -44,3 +44,15 @@ func TestPlzSort(t *testing.T) {
 		})
 	}
 }
+
+func BenchmarkCountDigetLoop(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		plzsort.CountDigetsLoop(123456789)
+	}
+}
+
+func BenchmarkCountDigetsLoga(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		plzsort.CountDigetsLoga(123456789)
+	}
+}
